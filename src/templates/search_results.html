@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<style>
+  html {
+    min-height: 500px;
+    height: 100%;
+  }
+
+  main {
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+  }
+
+  #page-content {
+    min-height: calc(100vh - 70px);
+    height: 100%;
+    width: 100%;
+    display: table;
+    table-layout: fixed;
+    margin: 0 auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    margin-bottom: -50px;
+  }
+</style>
+
+{% block content %}
+<main class="d-flex flex-column">
+  <div id="page-content">
+    {% if queryset %}
+    <div class="text-center">
+      <h2>This is the results of your search</h2>
+    </div>
+    <div class="container align-items-center">
+      {% for post in queryset %}
+      <div class="post col-xl-6">
+        <div class="post-thumbnail"><a href="{{ post.get_absolute_url }}"><img src="{{ post.thumbnail.url }}" alt="..."
+              class="img-fluid"></a></div>
+        <div class="post-details">
+          <div class="post-meta d-flex justify-content-between">
+            {% comment %} <div class="date meta-last">{{post.ts|timesince}}ago</div> {% endcomment %}
+            <div class="category">
+              {% for cat in post.categories.all %}
+              <a href="#">{{ cat }}</a>
+              {% endfor %}
+            </div>
+          </div><a href="{{ post.get_absolute_url }}">
+            <h3 class="h4">{{ post.title }}</h3>
+          </a>
+          <p class="text-muted">{{ post.overview }}</p>
+          <footer class="post-footer d-flex align-items-center">
+            <a href="#" class="author d-flex align-items-center flex-wrap">
+              <div class="avatar"><img src="{{ post.author.profile_picture.url }}" alt="..." class="img-fluid"></div>
+              <div class="title"><span>{{ post.author.user.username }}</span></div>
+            </a>
+            <div class="date"><i class="icon-clock"></i>{{ post.ts|timesince }} ago</div>
+            <div class="comments meta-last"><i class="icon-comment"></i>{{ post.comment_count }}</div>
+          </footer>
+        </div>
+      </div>
+      <br>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center">
+      <h2>No search results found</h2>
+    </div>
+    
+    <section
+      style="background: url('img/not_found.jpg'); background-size: cover; background-position: center center"
+      class="hero">
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-7">
+            <h1>no search results found</h1>
+          </div>
+        </div>
+    </section>
+    {% endif %}
+  </div>
+</main>
+
+</div>
+{% endblock %}
